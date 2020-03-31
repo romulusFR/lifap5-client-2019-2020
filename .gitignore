@@ -1,0 +1,21 @@
+# Generic
+*~
+.env*
+*.bak
+backup/
+
+# Distribution folder
+dist/
+
+# VSCode
+.vscode/
+
+# Logs
+logs
+*.log
+
+# Dependency directories
+node_modules/
+
+
+
