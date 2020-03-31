@@ -1,0 +1,40 @@
+{
+  "name": "lifap5-client-2019-2020",
+  "productName": "My App",
+  "version": "0.2.0",
+  "description": "Client pour le projet LIFAP5 2019-2020 (gestion de qcm)",
+  "main": "index.html",
+  "scripts": {
+    "start": "webpack-dev-server --progress --colors",
+    "build": "webpack --mode production",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "clean-webpack-plugin": "^3.0.0",
+    "compression-webpack-plugin": "^3.1.0",
+    "css-loader": "^3.4.2",
+    "eslint": "^6.8.0",
+    "eslint-config-airbnb-base": "^14.1.0",
+    "eslint-config-prettier": "^6.10.0",
+    "eslint-plugin-import": "^2.20.1",
+    "eslint-plugin-lit": "^1.2.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-security": "^1.4.0",
+    "file-loader": "^6.0.0",
+    "html-webpack-plugin": "^4.0.2",
+    "mini-css-extract-plugin": "^0.9.0",
+    "prettier": "^1.19.1",
+    "webpack": "^4.42.1",
+    "webpack-cli": "^3.3.11",
+    "webpack-dev-server": "^3.10.3"
+  },
+  "dependencies": {
+    "bulma": "^0.8.1",
+    "bulma-toast": "^1.5.4",
+    "lit-element": "^2.3.1",
+    "lit-html": "^1.2.1",
+    "material-icons": "^0.3.1"
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "env": {
+    "es2020": true,
+    "browser": true,
+    "jest": true
+  },
+  "extends": [
+    "eslint:recommended",
+    "airbnb-base",
+    "prettier",
+    "plugin:import/recommended",
+    "plugin:promise/recommended",
+    "plugin:security/recommended",
+    "plugin:lit/recommended"
+  ],
+  "parserOptions": {
+    "sourceType": "module",
+    "ecmaFeatures": {
+    }    
+  },
+  "rules": {
+    "arrow-parens": ["error", "always"],
+    "no-console": ["error", { "allow": ["warn", "error", "debug", "info", "assert"] }],
+    "camelcase": ["error", { "allow": [ ] }],
+    "no-var": ["error"],
+    "no-param-reassign": ["error", { "props": false }],
+    "no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
+    "import/extensions": ["error", "ignorePackages"],
+    "import/prefer-default-export" : "off",
+    "no-underscore-dangle": "off",
+    "no-return-assign": ["error", "except-parens"]
+  }
+}
