@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>LIFAP5 2019-2020 - Client</title>
+    <!-- <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"> -->
+    <!-- <link rel="stylesheet" href="./node_modules/material-icons/iconfont/material-icons.css" /> -->
+    <!-- <link rel="stylesheet" href="./node_modules/bulma/css/bulma.min.css" /> -->
+  </head>
+
+  <body class="has-navbar-fixed-top ">
+    <header>
+      <nav class="navbar has-shadow is-spaced is-fixed-top has-background-grey-lighter" role="navigation" aria-label="main navigation">
+        <div class="navbar-brand">
+          <a class="navbar-item" href="https://lifap5.univ-lyon1.fr">
+            <h1>Quizzz</h1>
+            <i class="material-icons right">question_answer</i>
+          </a>
+        </div>
+
+        <div class="navbar-menu ">
+          <div class="navbar-start"></div>
+
+          <div class="navbar-end">
+            <div class="navbar-item">
+              <quiz-search></quiz-search>
+            </div>
+            <div class="navbar-item">
+              <quiz-user></quiz-user>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      <section class="section has-background-white-ter">
+        <div class="tabs is-medium ">
+          <ul>
+            <li class="is-active"><a>Tous les quizzes</a></li>
+            <li><a>Mes quizzes</a></li>
+            <li><a>Mes réponses</a></li>
+          </ul>
+        </div>
+      </section>
+    </header>
+
+    <main class="section">
+      <div class="columns">
+        <div class="column is-one-third ">
+          <paginated-quizzes limit="5" order="created_at" dir="desc"></paginated-quizzes>
+        </div>
+        <div class="column ">
+          <quiz-detail></quiz-detail>
+        </div>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="content has-text-centered">
+        <p>
+          CC BY-NC-SA 3.0 FR
+          <a class="grey-text text-lighten-4 right" href="https://lifap5.univ-lyon1.fr/">https://lifap5.univ-lyon1.fr</a>
+        </p>
+      </div>
+    </footer>
+
+    <!-- <script type="module" src="src/index.js" defer></script> -->
+    <!-- Script is automagically added by webpack -->
+  </body>
+</html>
