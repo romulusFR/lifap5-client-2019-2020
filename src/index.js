@@ -1,4 +1,6 @@
+/* globals DEVELOPMENT VERSION NAME */
 /* eslint-disable no-unused-vars */
+
 // import css via webpack
 import 'bulma/css/bulma.min.css';
 import 'material-icons/iconfont/material-icons.css';
@@ -31,4 +33,5 @@ function refresh(msg) {
   }
 }
 
+debug(`${NAME} ${VERSION}[${DEVELOPMENT?'dev':'prod'}]`);
 // webSocket(refresh);

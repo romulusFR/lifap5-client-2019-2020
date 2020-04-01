@@ -1,7 +1,17 @@
+const webpack = require('webpack');
 const CompressionPlugin = require('compression-webpack-plugin');
 const config = require('./webpack.config.common');
+const pjson = require('./package.json');
 
-const devConfig = { ...config, mode: 'production' };
-devConfig.plugins.push(new CompressionPlugin({test: /(\.css|\.js)$/i,}));
+const defines = new webpack.DefinePlugin({
+  DEVELOPMENT: JSON.stringify(false),
+  VERSION: JSON.stringify(pjson.version),
+  NAME: JSON.stringify(pjson.name),
+});
 
-module.exports = devConfig;
+const prodConfig = { ...config, mode: 'production' };
+
+prodConfig.plugins.push(new CompressionPlugin({ test: /(\.css|\.js)$/i }));
+prodConfig.plugins.push(defines);
+
+module.exports = prodConfig;

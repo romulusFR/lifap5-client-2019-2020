@@ -1,12 +1,13 @@
+/* globals DEVELOPMENT */
+
 // Some tooling for fetch requests
 
-// const server = 'https://lifap5.univ-lyon1.fr';
-
-const secure = false;
+// configure host
+const development = DEVELOPMENT;
+const secure = !development;
 const wsProt = `ws${secure ? 's' : ''}`;
 const webProt = `http${secure ? 's' : ''}`;
-
-const server = 'localhost:3000';
+const server = development ? 'localhost:3000' : 'lifap5.univ-lyon1.fr';
 const wsServer = `${wsProt}://${server}/stream/`;
 const webServer = `${webProt}://${server}`;
 
@@ -29,7 +30,7 @@ function filterHttpResponse(response) {
 }
 
 function debug(...args) {
-  return console.debug(...args)
+  if (development) console.debug(...args);
 }
 
 export { wsServer, webServer, headers, filterHttpResponse, debug };

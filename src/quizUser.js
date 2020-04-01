@@ -1,3 +1,5 @@
+/* globals DEVELOPMENT */
+
 import { LitElement, html } from 'lit-element';
 import { webServer, headers, filterHttpResponse, debug } from './utils.js';
 
@@ -82,7 +84,7 @@ class QuizUser extends LitElement {
   constructor() {
     debug(`@QuizUser.constructor`);
     super();
-    this.xApiKey = '7038e76c-7fc3-423f-bfaa-97a0872bdb68';
+    this.xApiKey = DEVELOPMENT?'7038e76c-7fc3-423f-bfaa-97a0872bdb68':null;
   }
 
   connectedCallback() {
