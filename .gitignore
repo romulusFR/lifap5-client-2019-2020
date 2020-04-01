@@ -3,6 +3,7 @@
 .env*
 *.bak
 backup/
+NOTES.md
 
 # Distribution folder
 dist/
@@ -16,6 +17,7 @@ logs
 
 # Dependency directories
 node_modules/
+
 
 
 
