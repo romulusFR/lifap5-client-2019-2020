@@ -5,8 +5,8 @@
   "description": "Client pour le projet LIFAP5 2019-2020 (gestion de qcm)",
   "main": "index.html",
   "scripts": {
-    "start": "webpack-dev-server --progress --colors",
-    "build": "webpack --mode production",
+    "start": "webpack-dev-server --config webpack.config.development.js --progress --colors",
+    "build": "webpack --config webpack.config.production.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",

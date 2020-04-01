@@ -2,19 +2,19 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const CompressionPlugin = require('compression-webpack-plugin');
+// const CompressionPlugin = require('compression-webpack-plugin');
 
 module.exports = {
-  mode: 'development',
+  // mode: 'development',
   entry: {
     app: path.resolve(__dirname, 'src/index.js'),
   },
-  devtool: 'inline-source-map',
+  // devtool: 'inline-source-map',
   devServer: {
     contentBase: './dist',
   },
   plugins: [
-    new CompressionPlugin(),
+    // new CompressionPlugin(),
     new MiniCssExtractPlugin(),
     new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({
