@@ -7,10 +7,10 @@ import 'bulma-checkradio';
 import '@creativebulma/bulma-tooltip/dist/bulma-tooltip.min.css';
 import { webServer, headers, filterHttpResponse, debug } from './utils.js';
 
-async function delAsnwer(quiz, question) {
+async function delAsnwer(question) {
   debug(this)
   const { xApiKey } = this.root.querySelector('quiz-user');
-  const url = `${webServer}/quizzes/${quiz}/questions/${question}/answers/`;
+  const url = `${webServer}/quizzes/${this.quiz}/questions/${question.question_id}/answers/`;
   debug(`@QuizDetail.delAsnwer`, url);
 
   try {
@@ -19,9 +19,11 @@ async function delAsnwer(quiz, question) {
     const msg = `
       ${r.user_id} suppressed his/her answer to question ${r.question_id}}
     `;
-    return toast({ message: msg, type: 'is-success', dismissible: true, position: 'bottom-right' });
+    toast({ message: msg, type: 'is-success', dismissible: true, position: 'bottom-right' });
   } catch (err) {
     toast({ message: `${err.name} : ${err.message}`, type: 'is-danger', dismissible: true, position: 'bottom-right' });
+  } finally {
+    this.performUpdate()
   }
 }
 
@@ -100,7 +102,7 @@ function quizTmpl() {
       const theDate = new Date(theseAnswers[0].answers.filter((a) => a.question_id === q.question_id)[0].answered_at);
       return html`
         (répondu le ${theDate.toLocaleString('fr-FR')})
-        <span class="icon" @click=${() => delAsnwer(this.quiz, q)}><i class="material-icons">delete</i></span>
+        <span class="icon" @click=${() => delAsnwer.bind(this)(q)}><i class="material-icons">delete</i></span>
       `;
     }
     return html``;
