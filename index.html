@@ -34,25 +34,31 @@
       </nav>
 
       <section class="section has-background-white-ter">
-        <div class="tabs is-medium ">
+        <div class="tabs is-medium is-toggle ">
           <ul>
-            <li class="is-active"><a>Tous les quizzes</a></li>
-            <li><a>Mes quizzes</a></li>
-            <li><a>Mes réponses</a></li>
+            <li data-tab="all" class="is-active"><a>Tous les quizzes</a></li>
+            <li data-tab="quizzes"><a>Mes quizzes</a></li>
+            <li data-tab="answers"><a>Mes réponses</a></li>
           </ul>
         </div>
       </section>
     </header>
 
-    <main class="section">
-      <div class="columns">
-        <div class="column is-one-third ">
-          <paginated-quizzes limit="5" order="created_at" dir="desc"></paginated-quizzes>
+    <main>
+      <section class="section tab-content" data-tab="all">
+        <div class="columns">
+          <div class="column is-one-third ">
+            <paginated-quizzes limit="50" order="created_at" dir="desc"></paginated-quizzes>
+          </div>
+          <div class="column ">
+            <quiz-detail></quiz-detail>
+          </div>
         </div>
-        <div class="column ">
-          <quiz-detail></quiz-detail>
-        </div>
-      </div>
+      </section>
+
+      <section class="section tab-content" data-tab="quizzes"></section>
+
+      <section class="section tab-content" data-tab="answers"></section>
     </main>
 
     <footer class="footer">

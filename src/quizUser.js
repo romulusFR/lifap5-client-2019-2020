@@ -9,6 +9,18 @@ function getUser(api) {
   return fetch(url, { method: 'GET', headers: headers(api) }).then(filterHttpResponse);
 }
 
+function getMyQuizzes(api) {
+  debug(`@QuizUser.getMyQuizzes()`);
+  const url = `${webServer}/users/quizzes/`;
+  return fetch(url, { method: 'GET', headers: headers(api) }).then(filterHttpResponse);
+}
+
+function getMyAnswers(api) {
+  debug(`@QuizUser.getMyQuizzes()`);
+  const url = `${webServer}/users/answers/`;
+  return fetch(url, { method: 'GET', headers: headers(api) }).then(filterHttpResponse);
+}
+
 function userModalToggle() {
   debug(`@QuizUser.userModalToggle`, this);
   const $modal = this.root.getElementById('modal-user');
@@ -26,6 +38,8 @@ function userLogout() {
   debug(`@QuizUser.userLogout`, this);
   this.xApiKey = null;
   this.user = null;
+  this.quizzes = null;
+  this.answers = null;
   userModalToggle.bind(this)();
 }
 
@@ -36,6 +50,7 @@ function userTmpl() {
   const msg = logged
     ? html`
         <h4>${this.user.firstname} ${this.user.lastname.toUpperCase()} (${this.user.user_id})</h4>
+        <p>Vous êtes l'auteur de ${this.quizzes.length} QCMs et avez répondu à ${this.answers.length}</p>
       `
     : html`
         <div class="field">
@@ -84,7 +99,7 @@ class QuizUser extends LitElement {
   constructor() {
     debug(`@QuizUser.constructor`);
     super();
-    this.xApiKey = DEVELOPMENT?'7038e76c-7fc3-423f-bfaa-97a0872bdb68':null;
+    this.xApiKey = DEVELOPMENT ? '7038e76c-7fc3-423f-bfaa-97a0872bdb68' : null;
   }
 
   connectedCallback() {
@@ -101,8 +116,10 @@ class QuizUser extends LitElement {
     debug(`@QuizUser.performUpdate()`);
     try {
       if (this.xApiKey) {
-        const user = await getUser(this.xApiKey);
-        this.user = user;
+        const [u, q, a] = await Promise.all([getUser(this.xApiKey), getMyQuizzes(this.xApiKey), getMyAnswers(this.xApiKey)]);
+        this.user = u;
+        this.quizzes = q;
+        this.answers = a;
       }
     } catch (err) {
       console.error(err);
