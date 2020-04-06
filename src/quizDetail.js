@@ -3,7 +3,27 @@
 import { LitElement, html } from 'lit-element';
 import { classMap } from 'lit-html/directives/class-map';
 import { toast } from 'bulma-toast';
+import 'bulma-checkradio';
+import '@creativebulma/bulma-tooltip/dist/bulma-tooltip.min.css';
 import { webServer, headers, filterHttpResponse, debug } from './utils.js';
+
+async function delAsnwer(quiz, question) {
+  debug(this)
+  const { xApiKey } = this.root.querySelector('quiz-user');
+  const url = `${webServer}/quizzes/${quiz}/questions/${question}/answers/`;
+  debug(`@QuizDetail.delAsnwer`, url);
+
+  try {
+    const r = await fetch(url, { method: 'DELETE', headers: headers(xApiKey) }).then(filterHttpResponse);
+
+    const msg = `
+      ${r.user_id} suppressed his/her answer to question ${r.question_id}}
+    `;
+    return toast({ message: msg, type: 'is-success', dismissible: true, position: 'bottom-right' });
+  } catch (err) {
+    toast({ message: `${err.name} : ${err.message}`, type: 'is-danger', dismissible: true, position: 'bottom-right' });
+  }
+}
 
 async function postAnswer(ev) {
   debug(`@QuizDetail.postAnswer`, this);
@@ -33,32 +53,58 @@ async function postAnswer(ev) {
   }
 }
 
-const getQuiz = (id) => {
+function getQuiz(id) {
   debug(`@QuizDetail.getQuiz(${id})`);
   const url = `${webServer}/quizzes/${id}/`;
   return fetch(url, { method: 'GET', headers: headers() }).then(filterHttpResponse);
-};
+}
 
-const getQuestions = (id, ids) => {
+function getQuestions(id, ids) {
   debug(`@QuizDetail.getQuestions(${id}, [${ids}])`);
   const url = `${webServer}/quizzes/${id}/questions`;
   const fetches = ids.map((i) => fetch(`${url}/${i}`, { method: 'GET', headers: headers() }).then(filterHttpResponse));
   return Promise.all(fetches);
-};
+}
 
 function quizTmpl() {
   const date = new Date(this.details.created_at);
   const formatOpt = { month: 'long', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric' };
   const formattedDate = new Intl.DateTimeFormat('fr-FR', formatOpt).format(date);
 
-  const propositionTmpl = (q) => (p) => html`
-    <div class="control">
-      <label class="radio">
-        <input type="radio" name="${q}" class="filled-in proposition" value="${p.proposition_id}" />
-        <span>${p.content}</span>
-      </label>
-    </div>
-  `;
+  const { answers } = this.root.querySelector('quiz-user');
+  const theseAnswers = answers.filter((a) => a.quiz_id === this.quiz);
+  // debug(`@QuizDetail.quizTmpl`, theseAnswers);
+
+  function answeredProposition(q, p) {
+    return theseAnswers.length !== 0 && theseAnswers[0].answers.filter((a) => a.question_id === q && a.proposition_id === p).length !== 0;
+  }
+
+  const propositionTmpl = (q) => (p) => {
+    return html`
+      <input
+        type="radio"
+        id="prop-${q}-${p.proposition_id}"
+        name="${q}"
+        class="is-checkradio filled-in proposition "
+        value="${p.proposition_id}"
+        ?checked="${answeredProposition(q, p.proposition_id)}"
+      />
+      <label for="prop-${q}-${p.proposition_id}">${p.content}</label>
+    `;
+  };
+
+  const answeredQuestion = (q) => {
+    const answered = theseAnswers.length !== 0 && theseAnswers[0].answers.filter((a) => a.question_id === q.question_id).length !== 0;
+
+    if (answered) {
+      const theDate = new Date(theseAnswers[0].answers.filter((a) => a.question_id === q.question_id)[0].answered_at);
+      return html`
+        (répondu le ${theDate.toLocaleString('fr-FR')})
+        <span class="icon" @click=${() => delAsnwer(this.quiz, q)}><i class="material-icons">delete</i></span>
+      `;
+    }
+    return html``;
+  }
 
   const questionTmpl = (q) => {
     const classes = {
@@ -67,8 +113,9 @@ function quizTmpl() {
     };
     return html`
       <div class="${classMap(classes)}" data-question="${q.question_id}">
-        <label class="label">${q.sentence}</label>
-        <div class="control">
+        <label class="label">${q.sentence} ${answeredQuestion(q)}</label>
+        <!-- <div class="control"> -->
+        <div class="field">
           ${q.propositions.map(propositionTmpl(q.question_id))}
         </div>
       </div>
@@ -77,8 +124,8 @@ function quizTmpl() {
   const questions = this.questions.map(questionTmpl);
 
   return html`
-    <article class="container box">
-      <div>
+    <article class="box has-background-white-ter">
+      <div clas="">
         <p class="title is-3">${this.details.title}</p>
         <p class="subtitle is-5">${formattedDate} par ${this.details.owner_id}</p>
         <p class="subtitle is-6">${this.details.description}</p>
@@ -86,8 +133,8 @@ function quizTmpl() {
           ${questions}
 
           <button class="button  is-primary" ?disabled=${!this.details.open} type="submit" name="action">
-            <span>Envoyer</span>
-            <span class="icon"><i class="material-icons">send</i></span>
+            <span>${this.details.open ? 'Envoyer' : 'QCM fermé'}</span>
+            <span class="icon"><i class="material-icons">${this.details.open ? 'send' : 'block'}</i></span>
           </button>
         </form>
       </div>
