@@ -4,6 +4,7 @@
 *.bak
 backup/
 NOTES.md
+server
 
 # Distribution folder
 dist/
