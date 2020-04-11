@@ -7,8 +7,15 @@ import 'bulma-checkradio';
 import '@creativebulma/bulma-tooltip/dist/bulma-tooltip.min.css';
 import { webServer, headers, filterHttpResponse, debug } from './utils.js';
 
-async function delAsnwer(question) {
-  debug(this)
+function getAnswers() {
+  debug(`@QuizDetail.getAnswers()`);
+  const { xApiKey } = this.root.querySelector('quiz-user');
+  const url = `${webServer}/users/answers/`;
+  return fetch(url, { method: 'GET', headers: headers(xApiKey) }).then(filterHttpResponse);
+}
+
+async function delAnswer(question) {
+  debug(this);
   const { xApiKey } = this.root.querySelector('quiz-user');
   const url = `${webServer}/quizzes/${this.quiz}/questions/${question.question_id}/answers/`;
   debug(`@QuizDetail.delAsnwer`, url);
@@ -23,7 +30,7 @@ async function delAsnwer(question) {
   } catch (err) {
     toast({ message: `${err.name} : ${err.message}`, type: 'is-danger', dismissible: true, position: 'bottom-right' });
   } finally {
-    this.performUpdate()
+    this.requestUpdate();
   }
 }
 
@@ -52,6 +59,8 @@ async function postAnswer(ev) {
     });
   } catch (err) {
     toast({ message: `${err.name} : ${err.message}`, type: 'is-danger', dismissible: true, position: 'bottom-right' });
+  } finally {
+    this.requestUpdate();
   }
 }
 
@@ -72,13 +81,11 @@ function quizTmpl() {
   const date = new Date(this.details.created_at);
   const formatOpt = { month: 'long', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric' };
   const formattedDate = new Intl.DateTimeFormat('fr-FR', formatOpt).format(date);
-
-  const { answers } = this.root.querySelector('quiz-user');
-  const theseAnswers = answers.filter((a) => a.quiz_id === this.quiz);
-  // debug(`@QuizDetail.quizTmpl`, theseAnswers);
+  const theseAnswers = this.answers;
+  debug(`@QuizDetail.quizTmpl`, theseAnswers);
 
   function answeredProposition(q, p) {
-    return theseAnswers.length !== 0 && theseAnswers[0].answers.filter((a) => a.question_id === q && a.proposition_id === p).length !== 0;
+    return theseAnswers.filter((a) => a.question_id === q && a.proposition_id === p).length !== 0;
   }
 
   const propositionTmpl = (q) => (p) => {
@@ -96,17 +103,17 @@ function quizTmpl() {
   };
 
   const answeredQuestion = (q) => {
-    const answered = theseAnswers.length !== 0 && theseAnswers[0].answers.filter((a) => a.question_id === q.question_id).length !== 0;
+    const answered = theseAnswers.filter((a) => a.question_id === q.question_id).length !== 0;
 
     if (answered) {
-      const theDate = new Date(theseAnswers[0].answers.filter((a) => a.question_id === q.question_id)[0].answered_at);
+      const theDate = new Date(theseAnswers.filter((a) => a.question_id === q.question_id)[0].answered_at);
       return html`
         (répondu le ${theDate.toLocaleString('fr-FR')})
-        <span class="icon" @click=${() => delAsnwer.bind(this)(q)}><i class="material-icons">delete</i></span>
+        <span class="icon" @click=${() => delAnswer.bind(this)(q)}><i class="material-icons">delete</i></span>
       `;
     }
     return html``;
-  }
+  };
 
   const questionTmpl = (q) => {
     const classes = {
@@ -149,6 +156,7 @@ class QuizDetail extends LitElement {
     return {
       quiz: { type: Number, reflect: true },
       highlightedQuestions: { type: Array, attribute: false },
+      answers: { type: Array, attribute: false },
     };
   }
 
@@ -164,6 +172,7 @@ class QuizDetail extends LitElement {
     super();
     this.quiz = null;
     this.highlightedQuestions = [];
+    this.answers = [];
   }
 
   connectedCallback() {
@@ -182,8 +191,14 @@ class QuizDetail extends LitElement {
       if (this.quiz !== null) {
         this.details = await getQuiz(this.quiz);
         this.questions = await getQuestions(this.quiz, this.details.questions_ids);
+        const answers = await getAnswers.bind(this)();
+        this.answers = answers.filter((a) => a.quiz_id === this.quiz);
+        if (this.answers.length > 0) this.answers = this.answers[0].answers;
+        else this.answers = [];
+        debug(`@QuizDetail.performUpdate()`, this.answers);
       }
     } catch (err) {
+      debug(`@QuizDetail.performUpdate() catch `, err);
       this.quiz = null;
     } finally {
       super.performUpdate();

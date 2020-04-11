@@ -15,8 +15,8 @@ function getMyQuizzes(api) {
   return fetch(url, { method: 'GET', headers: headers(api) }).then(filterHttpResponse);
 }
 
-function getMyAnswers(api) {
-  debug(`@QuizUser.getMyQuizzes()`);
+function getAnswers(api) {
+  debug(`@QuizUser.getAnswers()`);
   const url = `${webServer}/users/answers/`;
   return fetch(url, { method: 'GET', headers: headers(api) }).then(filterHttpResponse);
 }
@@ -116,7 +116,7 @@ class QuizUser extends LitElement {
     debug(`@QuizUser.performUpdate()`);
     try {
       if (this.xApiKey) {
-        const [u, q, a] = await Promise.all([getUser(this.xApiKey), getMyQuizzes(this.xApiKey), getMyAnswers(this.xApiKey)]);
+        const [u, q, a] = await Promise.all([getUser(this.xApiKey), getMyQuizzes(this.xApiKey), getAnswers(this.xApiKey)]);
         this.user = u;
         this.quizzes = q;
         this.answers = a;
